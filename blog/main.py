@@ -2,6 +2,7 @@ from fastapi import FastAPI, Depends, status, Response, HTTPException
 from sqlalchemy.orm import Session
 from . import schemas, models
 from .database import engine, SessionLocal
+
 from .hashing import Hash
 
 app = FastAPI()
@@ -81,3 +82,17 @@ def create_user(request: schemas.User, db: Session = Depends(get_db)):
 
     return new_user
 
+
+@app.get('/user', response_model=list[schemas.ShowUser])
+def all_users(db: Session = Depends(get_db)):
+    users = db.query(models.User).all()
+    return users
+
+
+@app.get('/user/{id}', response_model=schemas.ShowUser)
+def show_user(id, db: Session = Depends(get_db)):
+    user = db.query(models.User).filter(models.User.id == id).first()
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f'user with id \'{id}\' is not available')
+    return user
