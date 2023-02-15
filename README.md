@@ -6,5 +6,3 @@ python3 -m venv blog-env
 'go inside your virtual envirenment' then ->
 pip install -r requirements
 
-the domain:
-https://fastapiproject.deta.dev/
